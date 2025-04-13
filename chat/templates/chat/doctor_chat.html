@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-lg">
+            <div class="card-header bg-success text-white text-center">
+                <h3 class="mb-0"><i class="fas fa-comment-medical me-2"></i>Doctor Chat</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Doctor List -->
+                    <div class="col-md-4">
+                        <div class="card shadow">
+                            <div class="card-header bg-dark text-white text-center">
+                                <h5 class="mb-0">Available Doctors</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush" id="doctors-list">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center active">
+                                        <div>
+                                            <i class="fas fa-user-md me-2"></i>Dr. Rajesh Sharma
+                                            <small class="d-block text-muted">Cardiologist</small>
+                                        </div>
+                                        <span class="badge bg-success rounded-pill">Online</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-user-md me-2"></i>Dr. Priya Verma
+                                            <small class="d-block text-muted">Neurologist</small>
+                                        </div>
+                                        <span class="badge bg-success rounded-pill">Online</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-user-md me-2"></i>Dr. Anil Mehta
+                                            <small class="d-block text-muted">Pediatrician</small>
+                                        </div>
+                                        <span class="badge bg-secondary rounded-pill">Offline</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-user-md me-2"></i>Dr. Kavita Joshi
+                                            <small class="d-block text-muted">Dermatologist</small>
+                                        </div>
+                                        <span class="badge bg-success rounded-pill">Online</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Window -->
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0" id="chat-title">Dr. Rajesh Sharma - Cardiologist</h5>
+                            </div>
+                            <div class="card-body chat-box" id="chat-messages">
+                                <div class="d-flex mb-4">
+                                    <div class="flex-shrink-0">
+                                        <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Doctor">
+                                    </div>
+                                    <div class="ms-3 p-3 bg-light rounded">
+                                        <div class="fw-bold">Dr. Rajesh Sharma</div>
+                                        Hello! How can I assist you today?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <form id="chat-form">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="message-input" placeholder="Type your message here..." required>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+    body {
+        background: linear-gradient(to right, #6a11cb, #2575fc);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+        border-radius: 15px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        font-weight: bold;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-box {
+        height: 400px;
+        overflow-y: auto;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .list-group-item {
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .list-group-item:hover {
+        background: #e9ecef;
+    }
+
+    .active {
+        background: #198754 !important;
+        color: white;
+    }
+
+    .input-group .form-control {
+        border-radius: 10px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .input-group .form-control:focus {
+        border-color: #0072ff;
+        box-shadow: 0 0 10px rgba(0, 114, 255, 0.3);
+    }
+
+    .btn-primary {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    document.getElementById('chat-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value.trim();
+        
+        if (message) {
+            const chatMessages = document.getElementById('chat-messages');
+            
+            chatMessages.innerHTML += `
+                <div class="d-flex justify-content-end mb-4">
+                    <div class="me-3 p-3 bg-primary text-white rounded">
+                        <div class="fw-bold">You</div>
+                        ${message}
+                    </div>
+                    <div class="flex-shrink-0">
+                        <img src="https://via.placeholder.com/40" class="rounded-circle" alt="User">
+                    </div>
+                </div>
+            `;
+            
+            messageInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate doctor response
+            setTimeout(() => {
+                chatMessages.innerHTML += `
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Doctor">
+                        </div>
+                        <div class="ms-3 p-3 bg-light rounded">
+                            <div class="fw-bold">Dr. Rajesh Sharma</div>
+                            Thank you for reaching out! I'll do my best to help you.
+                        </div>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+    });
+
+    document.querySelectorAll('#doctors-list li').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('#doctors-list li').forEach(li => li.classList.remove('active'));
+            this.classList.add('active');
+            
+            const doctorName = this.querySelector('div').innerText.split('\n')[0];
+            document.getElementById('chat-title').innerText = doctorName;
+            
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Doctor">
+                    </div>
+                    <div class="ms-3 p-3 bg-light rounded">
+                        <div class="fw-bold">${doctorName}</div>
+                        Hello! How can I help you today?
+                    </div>
+                </div>
+            `;
+        });
+    });
+</script>
+
+{% endblock %}

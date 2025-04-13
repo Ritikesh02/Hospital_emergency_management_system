@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center text-primary my-4">Request Emergency Help</h1>
+
+{% if submitted %}
+    <!-- Show the "Call an Ambulance" button directly -->
+    <button id="call-ambulance-button" class="btn btn-warning btn-lg" onclick="showAmbulanceDetails()">🚑 Call an Ambulance</button>
+    
+    <div id="ambulance-details" class="mt-4 p-4 border rounded shadow-sm" style="display:none;">
+        <h2 class="text-danger">🚑 Call an Ambulance</h2>
+        <p>Here are emergency contact numbers for ambulance services near you:</p>
+
+        <ul class="list-group">
+            <li class="list-group-item">🚑 <strong>Emergency Ambulance:</strong> <a href="tel:102" class="btn btn-link">102</a></li>
+            <li class="list-group-item">🚑 <strong>Private Ambulance Service:</strong> <a href="tel:+919876543210" class="btn btn-link">+91-9876543210</a></li>
+        </ul>
+
+        <button id="track-ambulance" class="btn btn-success btn-lg mt-3">🚨 Track Nearest Ambulance</button>
+
+        <!-- Map Section -->
+        <h2 class="text-info mt-4">📍 Live Ambulance Tracking</h2>
+        <div id="map-container" style="display:none;">
+            <div id="map" class="rounded" style="height: 400px;"></div>
+        </div>
+
+        <p id="eta-info" class="text-success font-weight-bold"></p>
+        <p id="error-message" class="text-danger font-weight-bold"></p>
+    </div>
+{% endif %}
+
+<!-- Include Leaflet.js for maps -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    function showAmbulanceDetails() {
+        document.getElementById("ambulance-details").style.display = "block";
+    }
+
+    document.getElementById("track-ambulance").addEventListener("click", function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    let userLat = position.coords.latitude;
+                    let userLon = position.coords.longitude;
+                    trackAmbulance(userLat, userLon);
+                },
+                function (error) {
+                    document.getElementById("error-message").textContent = "❌ Location access denied. Please enable GPS.";
+                }
+            );
+        } else {
+            document.getElementById("error-message").textContent = "❌ Geolocation is not supported in this browser.";
+        }
+    });
+
+    let map;
+
+    function trackAmbulance(userLat, userLon) {
+        fetch(`/emergency/nearest-ambulance/?lat=${userLat}&lon=${userLon}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.ambulance) {
+                    let { lat, lon, eta } = data.ambulance;
+                    document.getElementById("eta-info").textContent = `🚑 Estimated Arrival Time: ${eta} minutes`;
+
+                    document.getElementById("map-container").style.display = "block";
+
+                    if (map) {
+                        map.remove();
+                    }
+
+                    map = L.map("map").setView([userLat, userLon], 13);
+                    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+                    // User's location
+                    L.marker([userLat, userLon], {
+                        icon: L.icon({
+                            iconUrl: "https://img.icons8.com/color/48/000000/marker.png",
+                            iconSize: [35, 35]
+                        })
+                    }).addTo(map).bindPopup("📍 Your Location").openPopup();
+
+                    // Nearest Ambulance Location
+                    L.marker([lat, lon], {
+                        icon: L.icon({
+                            iconUrl: "https://img.icons8.com/color/48/000000/ambulance.png",
+                            iconSize: [40, 40]
+                        })
+                    }).addTo(map).bindPopup("🚑 Nearest Ambulance").openPopup();
+                } else {
+                    document.getElementById("error-message").textContent = "❌ No ambulances found nearby.";
+                }
+            })
+            .catch(() => {
+                document.getElementById("error-message").textContent = "❌ Error fetching ambulance data. Try again.";
+            });
+    }
+</script>
+
+{% endblock %}

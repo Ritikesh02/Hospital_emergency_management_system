@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg">
+            <div class="card-header bg-success text-white text-center">
+                <h3 class="mb-0"><i class="fas fa-user-plus me-2"></i>Register</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-bold">Username</label>
+                        <input type="text" name="username" class="form-control border-primary" id="id_username" required>
+                        <div class="invalid-feedback">Please enter a valid username.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label fw-bold">Email</label>
+                        <input type="email" name="email" class="form-control border-primary" id="id_email" required>
+                        <div class="invalid-feedback">Please enter a valid email.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label fw-bold">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control border-primary" id="id_phone">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_address" class="form-label fw-bold">Address</label>
+                        <textarea name="address" class="form-control border-primary" id="id_address" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password1" class="form-label fw-bold">Password</label>
+                        <input type="password" name="password1" class="form-control border-danger" id="id_password1" required>
+                        <div class="invalid-feedback">Password must be at least 8 characters long.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password2" class="form-label fw-bold">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control border-danger" id="id_password2" required>
+                        <div class="invalid-feedback">Passwords do not match.</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg hover-effect">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center bg-light">
+                <p class="mb-0">Already have an account? <a href="{% url 'login' %}" class="text-primary fw-bold">Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+    body {
+        background: linear-gradient(to right, #00c6ff, #0072ff);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        font-weight: bold;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-control {
+        border-radius: 10px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: #0072ff;
+        box-shadow: 0 0 10px rgba(0, 114, 255, 0.3);
+    }
+
+    .hover-effect {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .hover-effect:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+{% endblock %}

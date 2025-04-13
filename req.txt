@@ -1,0 +1,206 @@
+medical_emergency_system/
+│
+├── manage.py
+├── emergency_project/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├──templates/
+│   ├── base.html
+│   └── home.html
+│
+│
+├── users/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   ├── urls.py
+│   └── templates/
+│       └── users/
+│           ├── login.html
+│           ├── register.html
+│           └── profile.html
+│
+├── emergency/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   ├── urls.py
+│   └── templates/
+│       └── emergency/
+│           ├── request_help.html
+│           ├── hospitals_list.html
+|           ├── delete_patient.html
+|           ├── edit_patient.html
+│           └── patients_details.html
+│
+├── medical_records/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   ├── urls.py
+│   └── templates/
+│       └── medical_records/
+│           ├── delete_record.html
+│           ├── edit_record.html
+│           ├── upload_record.html
+│           └── view_records.html
+│
+├── chat/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── views.py
+│   ├── consumers.py
+│   ├── routing.py
+│   └── templates/
+│       └── chat/
+│           ├── doctor_chat.html
+│           └── video_consultation.html
+├── static/
+│   └── css/
+|       ├── doctor_chat.css
+|       ├── home.css
+|       ├── hospitals_list.css
+|       ├── logout.css
+|       ├── patients_details.css
+|       ├── profile.css
+|       ├── request_help.css
+|       ├── upload_record.css
+|       ├── style.css
+|       ├── upload_record.css
+|       ├── video_consultation.css
+│       └── view_records.css
+│           
+│
+└── requirements.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## install commands
+    pip install Django django-crispy-forms channels channels-redis django-allauth python-dotenv django-leaflet geopy requests aiortc celery redis twilio reportlab Pillow qrcode scikit-learn pytest pytest-django gunicorn python-dateutil Pillow
+
+
+
+ambulance_tracking.html
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>🚨 Track Nearest Ambulance</h2>
+<p>📍 Live Ambulance Tracking</p>
+
+<!-- Track Button -->
+<button id="track-ambulance">🚑 Track Nearest Ambulance</button>
+
+<!-- Map Section -->
+<h2>📍 Live Ambulance Location</h2>
+<div id="map-container">
+    <div id="map"></div>
+</div>
+
+<p id="eta-info" style="color: green;"></p>
+<p id="error-message" style="color: red;"></p>
+
+<!-- LeafletJS for Maps -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<style>
+    #map-container {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+    #map {
+        width: 100%;
+        height: 400px;
+        border: 1px solid #ccc;
+    }
+    button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<script>
+document.getElementById("track-ambulance").addEventListener("click", function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                let userLat = position.coords.latitude;
+                let userLon = position.coords.longitude;
+                trackAmbulance(userLat, userLon);
+            },
+            function () {
+                document.getElementById("error-message").textContent = "❌ Location access denied. Enable GPS.";
+            }
+        );
+    } else {
+        document.getElementById("error-message").textContent = "❌ Geolocation is not supported in this browser.";
+    }
+});
+
+let map;
+
+function trackAmbulance(userLat, userLon) {
+    fetch(`/emergency/nearest-ambulance/?lat=${userLat}&lon=${userLon}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById("error-message").textContent = `⚠️ ${data.error}`;
+                return;
+            }
+
+            let { ambulance_lat, ambulance_lon, eta } = data;
+
+            document.getElementById("eta-info").textContent = `🚑 Nearest ambulance is ${eta} minutes away.`;
+
+            if (map) {
+                map.remove();
+            }
+            map = L.map("map").setView([userLat, userLon], 13);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+            // User Location Marker
+            L.marker([userLat, userLon]).addTo(map).bindPopup("📍 Your Location").openPopup();
+
+            // Ambulance Location Marker
+            L.marker([ambulance_lat, ambulance_lon], {
+                icon: L.icon({ iconUrl: 'https://img.icons8.com/color/48/ambulance.png', iconSize: [40, 40] })
+            }).addTo(map).bindPopup("🚑 Nearest Ambulance").openPopup();
+        })
+        .catch(() => {
+            document.getElementById("error-message").textContent = "❌ Error fetching ambulance data.";
+        });
+}
+</script>
+
+{% endblock %}

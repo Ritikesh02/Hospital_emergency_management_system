@@ -1,0 +1,59 @@
+.qodo
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.DS_Store
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+.env
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# System
+Thumbs.db
+.DS_Store
+
+# Pytest
+htmlcov/
+*.cover
+.coverage
+.cache
+.pytest_cache/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Redis dump
+dump.rdb
+
+# Channels
+*.asgi
+*.wsgi
+
+# Compiled files
+*.so
+
+# Logs
+*.log
+
+# Twilio config
+twilio-debug.log
