@@ -30,7 +30,7 @@
 
         document.querySelector('#chat-log').appendChild(messageElement);
 
-        // Scroll to the latest message
+        
         const chatLog = document.querySelector('#chat-log');
         chatLog.scrollTop = chatLog.scrollHeight;
     };
@@ -53,7 +53,7 @@
             chatSocket.send(JSON.stringify({
                 'message': message
             }));
-            messageInputDom.value = '';  // Clear the input field
+            messageInputDom.value = '';  
         }
     };
 </script>
