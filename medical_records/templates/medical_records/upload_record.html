@@ -1,36 +1,80 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h3 class="mb-0"><i class="fas fa-file-medical me-2"></i>Upload Medical Record</h3>
-            </div>
-            <div class="card-body">
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="id_patient_name" class="form-label">Patient Name</label>
-                        <input type="text" name="patient_name" class="form-control" id="id_patient_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_description" class="form-label">Description</label>
-                        <textarea name="description" class="form-control" id="id_description" rows="4" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_file" class="form-label">Medical File</label>
-                        <input type="file" name="file" class="form-control" id="id_file">
-                        <div class="form-text">Upload medical reports, prescriptions, or any other relevant documents.</div>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-info">
-                            <i class="fas fa-upload me-1"></i>Upload Record
-                        </button>
-                    </div>
-                </form>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 rounded-lg shadow-xl">
+                <div class="card-header text-white" style="background: linear-gradient(135deg, #6e7fdb, #1c92d2);">
+                    <h3 class="mb-0 d-flex align-items-center">
+                        <i class="fas fa-file-medical me-2" style="font-size: 1.5rem;"></i>
+                        <span>Upload Medical Record</span>
+                    </h3>
+                </div>
+                <div class="card-body p-4" style="background-color: #f9f9fb;">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="id_patient_name" class="form-label d-flex align-items-center text-dark" style="font-size: 1.1rem; font-weight: 600;">
+                                <i class="fas fa-user me-2"></i>Patient Name
+                            </label>
+                            <input type="text" name="patient_name" class="form-control form-control-lg shadow-sm" id="id_patient_name" required placeholder="Enter patient's name">
+                        </div>
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label d-flex align-items-center text-dark" style="font-size: 1.1rem; font-weight: 600;">
+                                <i class="fas fa-file-alt me-2"></i>Description
+                            </label>
+                            <textarea name="description" class="form-control form-control-lg shadow-sm" id="id_description" rows="4" required placeholder="Provide a brief description of the file content"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="id_file" class="form-label d-flex align-items-center text-dark" style="font-size: 1.1rem; font-weight: 600;">
+                                <i class="fas fa-upload me-2"></i>Medical File
+                            </label>
+                            <input type="file" name="file" class="form-control form-control-lg shadow-sm" id="id_file" accept="application/pdf, .doc, .docx, image/*">
+                            <div class="form-text text-muted">Upload medical reports, prescriptions, or any other relevant documents.</div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-lg" style="border-radius: 50px; transition: all 0.3s ease;">
+                                <i class="fas fa-upload me-1"></i> Upload Record
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Add Custom CSS for hover effects and animation -->
+<style>
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #00c6ff);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .card {
+        border-radius: 20px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        padding: 20px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .form-control {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #1c92d2;
+        box-shadow: 0px 0px 8px rgba(28, 146, 210, 0.4);
+    }
+</style>
+
 {% endblock %}

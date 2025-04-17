@@ -1,519 +1,309 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="hospitals-container">
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/hospitals_list.css' %}">
-<h1>Nearby Hospitals & Clinics</h1>
+    <link rel="stylesheet" href="{% static 'css/hospitals_list.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<p>Enter your coordinates manually or use "Auto Detect Location".</p>
+    <h1><i class="fas fa-hospital-symbol"></i> Nearby Hospitals & Clinics</h1>
+    <p>Enter your coordinates manually or use <strong>"Auto Detect Location"</strong>.</p>
 
-<form id="location-form">
-    <label for="lat">Latitude:</label>
-    <input type="text" id="lat" name="lat" placeholder="Enter Latitude" required>
-    
-    <label for="lon">Longitude:</label>
-    <input type="text" id="lon" name="lon" placeholder="Enter Longitude" required>
-    
-    <button type="submit">Find Nearby Medical Centers</button>
-    <button type="button" id="auto-location-btn">Auto Detect Location</button>
-</form>
+    <form id="location-form">
+        <label for="lat"><i class="fas fa-map-marker-alt"></i> Latitude:</label>
+        <input type="text" id="lat" name="lat" placeholder="Enter Latitude" required>
 
-<!-- Results Section -->
-<h2>Results:</h2>
-<ul id="hospitals-list">
-    <li>Waiting for input...</li>
-</ul>
+        <label for="lon"><i class="fas fa-map-marker-alt"></i> Longitude:</label>
+        <input type="text" id="lon" name="lon" placeholder="Enter Longitude" required>
 
-<!-- Map Section -->
-<h2>Map View</h2>
-<div id="map-container">
-    <div id="map"></div>
-</div>
+        <button type="submit"><i class="fas fa-search-location"></i> Find Nearby</button>
+        <button type="button" id="auto-location-btn"><i class="fas fa-location-arrow"></i> Auto Detect</button>
+    </form>
 
-<p id="error-message" style="color: red;"></p>
+    <h2><i class="fas fa-list-ul"></i> Results:</h2>
+    <ul id="hospitals-list">
+        <li>Waiting for input...</li>
+    </ul>
 
-<!-- LeafletJS for Maps -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <h2><i class="fas fa-map-marked-alt"></i> Map View</h2>
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
 
-<style>
-    /* Main container styling */
-.hospitals-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 25px;
-  background-color: rgba(255, 255, 255, 0.92);
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
+    <p id="error-message" style="color: red;"></p>
 
-/* Background gradient */
-body {
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb, #90caf9, #64b5f6);
-  background-size: 400% 400%;
-  animation: gradient-animation 15s ease infinite;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{% static 'js/base.js' %}"></script>
 
-@keyframes gradient-animation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(120deg, #e3f2fd, #bbdefb, #90caf9, #64b5f6);
+            background-size: 300% 300%;
+            animation: gradient-bg 15s ease infinite;
+        }
 
-/* Headings */
-h1 {
-  color: #0d47a1;
-  text-align: center;
-  margin-bottom: 25px;
-  font-weight: 600;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #2196f3;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
+        @keyframes gradient-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-h2 {
-  color: #1565c0;
-  margin-top: 30px;
-  margin-bottom: 15px;
-  font-weight: 500;
-  padding-left: 10px;
-  border-left: 4px solid #2196f3;
-}
+        .hospitals-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.75);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(12px);
+        }
 
-/* Form styling */
-#location-form {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 25px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  align-items: center;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-}
+        h1, h2 {
+            text-align: center;
+            color: #0d47a1;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
 
-label {
-  font-weight: 500;
-  color: #1976d2;
-  margin-right: 8px;
-}
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 25px;
+        }
 
-input[type="text"] {
-  padding: 10px 15px;
-  border: 1px solid #90caf9;
-  border-radius: 6px;
-  margin-right: 15px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  flex: 1;
-  min-width: 120px;
-}
+        #location-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            background: #f1f8ff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
 
-input[type="text"]:focus {
-  border-color: #1976d2;
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.25);
-  outline: none;
-}
+        label {
+            font-weight: 600;
+            color: #1976d2;
+        }
 
-button {
-  background-color: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 18px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 500;
-  margin-right: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
+        input[type="text"] {
+            padding: 10px 15px;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            min-width: 160px;
+            transition: 0.3s ease;
+        }
 
-button:hover {
-  background-color: #1565c0;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+        input:focus {
+            border-color: #1976d2;
+            outline: none;
+            box-shadow: 0 0 6px #64b5f6;
+        }
 
-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+        button {
+            background-color: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
 
-#auto-location-btn {
-  background-color: #03a9f4;
-}
+        button:hover {
+            background-color: #0d47a1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-#auto-location-btn:hover {
-  background-color: #0288d1;
-}
+        #auto-location-btn {
+            background-color: #00acc1;
+        }
 
-/* Hospitals list styling */
-#hospitals-list {
-  list-style-type: none;
-  padding: 0;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-}
+        #auto-location-btn:hover {
+            background-color: #00838f;
+        }
 
-#hospitals-list li {
-  padding: 15px;
-  border-bottom: 1px solid #e1f5fe;
-  transition: background-color 0.2s;
-}
+        #hospitals-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            background: #ffffffee;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-#hospitals-list li:hover {
-  background-color: #e3f2fd;
-}
+        #hospitals-list li {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0f7fa;
+            transition: background 0.2s;
+        }
 
-#hospitals-list li:last-child {
-  border-bottom: none;
-}
+        #hospitals-list li:hover {
+            background: #e3f2fd;
+        }
 
-#hospitals-list li b {
-  color: #1565c0;
-}
+        #hospitals-list button {
+            float: right;
+            background-color: #2196f3;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
 
-#hospitals-list button {
-  background-color: #2196f3;
-  padding: 6px 12px;
-  margin-left: 10px;
-  font-size: 0.9em;
-  float: right;
-}
+        #map-container {
+            margin-top: 25px;
+        }
 
-#hospitals-list button:hover {
-  background-color: #1976d2;
-}
+        #map {
+            width: 100%;
+            height: 500px;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
 
-/* Map styling */
-#map-container {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 30px;
-}
+        #error-message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
 
-#map {
-  width: 66.66%;
-  height: 500px;
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
+        @media (max-width: 768px) {
+            #location-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
 
-/* Error message styling */
-#error-message {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: 500;
-  background-color: rgba(255, 255, 255, 0.8);
-}
+            input, button {
+                width: 100%;
+            }
 
-/* User location marker customization */
-.user-location-marker div {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5);
-}
+            #map {
+                height: 350px;
+            }
+        }
+    </style>
 
-/* Success message styling */
-.success-message {
-  color: #2e7d32 !important;
-  background-color: #e8f5e9;
-  padding: 10px;
-  border-radius: 6px;
-  border-left: 4px solid #4caf50;
-}
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const latInput = document.getElementById("lat");
+        const lonInput = document.getElementById("lon");
+        const hospitalsList = document.getElementById("hospitals-list");
+        const errorMessage = document.getElementById("error-message");
+        const autoLocationBtn = document.getElementById("auto-location-btn");
 
-/* Warning message styling */
-.warning-message {
-  color: #ef6c00 !important;
-  background-color: #fff3e0;
-  padding: 10px;
-  border-radius: 6px;
-  border-left: 4px solid #ff9800;
-}
+        const defaultLat = 31.2554;
+        const defaultLon = 75.7049;
 
-/* Info message styling */
-.info-message {
-  color: #01579b !important;
-  background-color: #e1f5fe;
-  padding: 10px;
-  border-radius: 6px;
-  border-left: 4px solid #03a9f4;
-}
+        latInput.value = defaultLat;
+        lonInput.value = defaultLon;
 
-/* Loading animation */
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
-}
+        let userLat = defaultLat;
+        let userLon = defaultLon;
 
-.loading-item {
-  animation: pulse 1.5s infinite ease-in-out;
-  background-color: #e3f2fd !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .hospitals-container {
-    padding: 15px;
-    margin: 10px;
-    border-radius: 10px;
-  }
-  
-  #map {
-    width: 100%;
-    height: 400px;
-  }
-  
-  #location-form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  input[type="text"] {
-    width: 100%;
-    margin-bottom: 10px;
-    margin-right: 0;
-  }
-  
-  button {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-  
-  #hospitals-list button {
-    float: none;
-    margin-top: 10px;
-    margin-left: 0;
-    width: 100%;
-  }
-}
-
-/* Tablet adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
-  #map {
-    width: 100%;
-  }
-  
-  #location-form {
-    flex-wrap: wrap;
-  }
-  
-  input[type="text"] {
-    flex-basis: calc(50% - 20px);
-  }
-
-    }
-</style>
-<script src="{% static 'js/base.js' %}"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const latInput = document.getElementById("lat");
-    const lonInput = document.getElementById("lon");
-    const hospitalsList = document.getElementById("hospitals-list");
-    const errorMessage = document.getElementById("error-message");
-    const autoLocationBtn = document.getElementById("auto-location-btn");
-
-    // Set default location to your actual location
-    const defaultLat = 31.2554;
-    const defaultLon = 75.7049;
-    
-    // Set initial values in the form inputs
-    latInput.value = defaultLat;
-    lonInput.value = defaultLon;
-    
-    let userLat = defaultLat;
-    let userLon = defaultLon;
-    
-    // Check URL parameters - these will override defaults if present
-    let urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("lat") && urlParams.get("lon")) {
-        userLat = parseFloat(urlParams.get("lat"));
-        userLon = parseFloat(urlParams.get("lon"));
-        latInput.value = userLat;
-        lonInput.value = userLon;
-    }
-
-    // Initialize Leaflet map
-    let map = L.map("map").setView([userLat, userLon], 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-    
-    // Add user marker variable
-    let userMarker = null;
-
-    // Automatically load hospitals at your location when page loads
-    fetchHospitals(userLat, userLon);
-
-    function detectLocation() {
-        errorMessage.textContent = "Requesting location access...";
-        
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    userLat = position.coords.latitude;
-                    userLon = position.coords.longitude;
-                    latInput.value = userLat;
-                    lonInput.value = userLon;
-                    
-                    errorMessage.textContent = "Location detected successfully!";
-                    errorMessage.style.color = "green";
-                    
-                    fetchHospitals(userLat, userLon);
-                },
-                function (error) {
-                    // If geolocation fails, fall back to default coordinates
-                    errorMessage.textContent = "Could not detect location. Using default location instead.";
-                    errorMessage.style.color = "orange";
-                    
-                    // Reset to default location
-                    userLat = defaultLat;
-                    userLon = defaultLon;
-                    latInput.value = userLat;
-                    lonInput.value = userLon;
-                    fetchHospitals(userLat, userLon);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }
-            );
-        } else {
-            errorMessage.textContent = "Geolocation is not supported by your browser. Using default location instead.";
-            
-            // Reset to default location
-            userLat = defaultLat;
-            userLon = defaultLon;
+        let urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("lat") && urlParams.get("lon")) {
+            userLat = parseFloat(urlParams.get("lat"));
+            userLon = parseFloat(urlParams.get("lon"));
             latInput.value = userLat;
             lonInput.value = userLon;
-            fetchHospitals(userLat, userLon);
         }
-    }
 
-    autoLocationBtn.addEventListener("click", detectLocation);
+        let map = L.map("map").setView([userLat, userLon], 13);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-    document.getElementById("location-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        errorMessage.textContent = "";
-        
-        try {
+        let userMarker = null;
+        fetchHospitals(userLat, userLon);
+
+        function detectLocation() {
+            errorMessage.textContent = "Detecting location...";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(pos) {
+                        userLat = pos.coords.latitude;
+                        userLon = pos.coords.longitude;
+                        latInput.value = userLat;
+                        lonInput.value = userLon;
+                        errorMessage.textContent = "Location detected!";
+                        errorMessage.style.color = "green";
+                        fetchHospitals(userLat, userLon);
+                    },
+                    function() {
+                        errorMessage.textContent = "Could not detect location.";
+                        errorMessage.style.color = "orange";
+                    }
+                );
+            } else {
+                errorMessage.textContent = "Geolocation not supported.";
+            }
+        }
+
+        autoLocationBtn.addEventListener("click", detectLocation);
+
+        document.getElementById("location-form").addEventListener("submit", function (e) {
+            e.preventDefault();
             userLat = parseFloat(latInput.value);
             userLon = parseFloat(lonInput.value);
-            
             if (isNaN(userLat) || isNaN(userLon)) {
-                throw new Error("Please enter valid coordinates.");
-            }
-            
-            if (userLat < -90 || userLat > 90 || userLon < -180 || userLon > 180) {
-                throw new Error("Coordinates out of range. Latitude: -90 to 90, Longitude: -180 to 180");
-            }
-            
-            fetchHospitals(userLat, userLon);
-        } catch (error) {
-            errorMessage.textContent = error.message;
-            errorMessage.style.color = "red";
-        }
-    });
-
-    function updateUserLocationOnMap(lat, lon) {
-        // Remove existing user marker if exists
-        if (userMarker) {
-            map.removeLayer(userMarker);
-        }
-        
-        // Add new user marker with custom icon
-        userMarker = L.marker([lat, lon], {
-            icon: L.divIcon({
-                className: 'user-location-marker',
-                html: '<div style="background-color: #1E88E5; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white;"></div>',
-                iconSize: [22, 22],
-                iconAnchor: [11, 11]
-            })
-        }).addTo(map);
-        
-        userMarker.bindPopup("Your Location").openPopup();
-        
-        // Center map on user location
-        map.setView([lat, lon], 13);
-    }
-
-    function fetchHospitals(lat, lon) {
-        hospitalsList.innerHTML = "<li>Loading hospitals...</li>";
-        
-        // Update user location on map
-        updateUserLocationOnMap(lat, lon);
-
-        fetch(`/emergency/nearby-hospitals/?lat=${lat}&lon=${lon}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                hospitalsList.innerHTML = "";
-                
-                // Clear previous hospital markers (but keep user marker)
-                map.eachLayer(layer => {
-                    if (layer instanceof L.Marker && layer !== userMarker) {
-                        map.removeLayer(layer);
-                    }
-                });
-
-                if (data.hospitals && data.hospitals.length > 0) {
-                    // Create bounds that include user location
-                    let bounds = L.latLngBounds([[lat, lon]]);
-                    
-                    data.hospitals.forEach(hospital => {
-                        const li = document.createElement("li");
-                        li.innerHTML = `
-                            <b>${hospital.name}</b> - ${hospital.address} [${hospital.distance.toFixed(2)} km]
-                            <button onclick="getDirections(${hospital.lat}, ${hospital.lon})">Get Directions</button>
-                        `;
-                        hospitalsList.appendChild(li);
-
-                        let hospitalMarker = L.marker([hospital.lat, hospital.lon]).addTo(map);
-                        hospitalMarker.bindPopup(`<b>${hospital.name}</b><br>${hospital.address}<br>${hospital.distance.toFixed(2)} km`);
-                        
-                        bounds.extend([hospital.lat, hospital.lon]);
-                    });
-
-                    // Fit map to bounds with padding
-                    map.fitBounds(bounds, { padding: [50, 50] });
-                } else {
-                    hospitalsList.innerHTML = "<li>No hospitals or clinics found.</li>";
-                }
-            })
-            .catch((error) => {
-                errorMessage.textContent = "Error fetching data: " + error.message;
+                errorMessage.textContent = "Invalid coordinates.";
                 errorMessage.style.color = "red";
-            });
-    }
+                return;
+            }
+            fetchHospitals(userLat, userLon);
+        });
 
-    function getDirections(destLat, destLon) {
-        // Always use the current form input values or default location for directions
-        const startLat = userLat || defaultLat;
-        const startLon = userLon || defaultLon;
-        
-        window.open(`https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLon}&destination=${destLat},${destLon}&travelmode=driving`, "_blank");
-    }
+        function updateUserLocationOnMap(lat, lon) {
+            if (userMarker) map.removeLayer(userMarker);
+            userMarker = L.marker([lat, lon], {
+                icon: L.divIcon({
+                    className: 'user-location-marker',
+                    html: '<div style="background-color: #1E88E5; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white;"></div>',
+                    iconSize: [22, 22],
+                    iconAnchor: [11, 11]
+                })
+            }).addTo(map).bindPopup("You are here").openPopup();
+            map.setView([lat, lon], 13);
+        }
 
-    window.getDirections = getDirections;
-});
-</script>
+        function fetchHospitals(lat, lon) {
+            hospitalsList.innerHTML = "<li>Loading hospitals...</li>";
+            updateUserLocationOnMap(lat, lon);
+
+            fetch(`/emergency/nearby-hospitals/?lat=${lat}&lon=${lon}`)
+                .then(res => res.json())
+                .then(data => {
+                    hospitalsList.innerHTML = "";
+                    map.eachLayer(layer => {
+                        if (layer instanceof L.Marker && layer !== userMarker) map.removeLayer(layer);
+                    });
+                    if (data.hospitals && data.hospitals.length > 0) {
+                        let bounds = L.latLngBounds([[lat, lon]]);
+                        data.hospitals.forEach(h => {
+                            const li = document.createElement("li");
+                            li.innerHTML = `<b>${h.name}</b> - ${h.address} [${h.distance.toFixed(2)} km] <button onclick="getDirections(${h.lat}, ${h.lon})"><i class="fas fa-route"></i> Directions</button>`;
+                            hospitalsList.appendChild(li);
+                            const m = L.marker([h.lat, h.lon]).addTo(map).bindPopup(`<b>${h.name}</b><br>${h.address}`);
+                            bounds.extend([h.lat, h.lon]);
+                        });
+                        map.fitBounds(bounds, { padding: [40, 40] });
+                    } else {
+                        hospitalsList.innerHTML = "<li>No hospitals or clinics found nearby.</li>";
+                    }
+                }).catch(err => {
+                    errorMessage.textContent = "Error fetching data: " + err.message;
+                    errorMessage.style.color = "red";
+                });
+        }
+
+        window.getDirections = function(destLat, destLon) {
+            const startLat = userLat || defaultLat;
+            const startLon = userLon || defaultLon;
+            window.open(`https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLon}&destination=${destLat},${destLon}&travelmode=driving`, "_blank");
+        };
+    });
+    </script>
 </div>
-
 {% endblock %}

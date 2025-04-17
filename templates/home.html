@@ -1,124 +1,161 @@
 {% extends 'base.html' %}
-{% load static %}  <!-- Add this line to load the static files -->
+{% load static %}
 
 {% block content %}
-    <!-- Linking CSS -->
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<!-- Linking Custom CSS -->
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-    <!-- Container for the dashboard -->
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0"><i class="fas fa-home me-2"></i>Medical Emergency Dashboard</h3>
-                    </div>
-                    <div class="card-body">
-                        {% if user.is_authenticated %}
-                            <!-- Welcome message -->
-                            <div class="alert alert-success">
-                                <h4 class="alert-heading"><i class="fas fa-user-check me-2"></i>Welcome, {{ user.username }}!</h4>
-                                <p>You are logged in to the Medical Emergency System.</p>
-                                <hr>
-                                <p class="mb-0"><strong>Email:</strong> {{ user.email }}</p>
-                                {% if user.profile.phone %}
-                                    <p class="mb-0"><strong>Phone:</strong> {{ user.profile.phone }}</p>
-                                {% endif %}
-                                {% if user.profile.address %}
-                                    <p class="mb-0"><strong>Address:</strong> {{ user.profile.address }}</p>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Cards for different actions -->
-                            <div class="row mt-4">
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <i class="fas fa-ambulance fa-3x text-danger mb-3"></i>
-                                            <h5 class="card-title">Request Emergency Help</h5>
-                                            <p class="card-text">Need immediate medical assistance? Request help now.</p>
-                                            <a href="{% url 'request_help' %}" class="btn btn-danger">Request Help</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <i class="fas fa-hospital fa-3x text-primary mb-3"></i>
-                                            <h5 class="card-title">View Hospitals</h5>
-                                            <p class="card-text">Find nearby hospitals and available ambulances.</p>
-                                            <a href="{% url 'hospitals_list' %}" class="btn btn-primary">View Hospitals</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <i class="fas fa-user-md fa-3x text-success mb-3"></i>
-                                            <h5 class="card-title">Chat with Doctor</h5>
-                                            <p class="card-text">Need medical advice? Chat with a doctor now.</p>
-                                            <a href="{% url 'doctor_chat' %}" class="btn btn-success">Start Chat</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- More action cards -->
-                            <div class="row mt-2">
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <i class="fas fa-file-medical fa-3x text-info mb-3"></i>
-                                            <h5 class="card-title">Medical Records</h5>
-                                            <p class="card-text">View or upload medical records for patients.</p>
-                                            <a href="{% url 'view_records' %}" class="btn btn-info">View Records</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <i class="fas fa-users fa-3x text-warning mb-3"></i>
-                                            <h5 class="card-title">Patient Details</h5>
-                                            <p class="card-text">Manage patient information and history.</p>
-                                            <a href="{% url 'patients_details' %}" class="btn btn-warning">View Patients</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <i class="fas fa-video fa-3x text-secondary mb-3"></i>
-                                            <h5 class="card-title">Video Consultation</h5>
-                                            <p class="card-text">Start a video consultation with a specialist.</p>
-                                            <a href="{% url 'video_consultation' %}" class="btn btn-secondary">Join Call</a>
-                                        </div>
-                                    </div>
+<!-- Gradient Background -->
+<style>
+    body {
+        background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .glass-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        color: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body h5, .card-body p {
+        color: #f8f9fa;
+    }
+
+    .card-header {
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: none;
+        backdrop-filter: blur(5px);
+    }
+
+    .btn {
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        border-radius: 50px;
+    }
+
+    .alert {
+        backdrop-filter: blur(5px);
+        background-color: rgba(40, 167, 69, 0.8);
+        border: none;
+        color: white;
+    }
+
+    .auth-buttons a {
+        width: 180px;
+    }
+
+    .text-shadow {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+<!-- Content Wrapper -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card glass-card p-4">
+                <div class="card-header text-center text-white">
+                    <h2 class="mb-0 text-shadow"><i class="fas fa-heartbeat me-2"></i>Medical Emergency Dashboard</h2>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                        <!-- Welcome Message -->
+                        <div class="alert alert-success shadow-sm">
+                            <h4 class="alert-heading"><i class="fas fa-user-check me-2"></i>Welcome, {{ user.username }}!</h4>
+                            <p>You are logged in to the Medical Emergency System.</p>
+                            <hr>
+                            <p><strong>Email:</strong> {{ user.email }}</p>
+                            {% if user.profile.phone %}
+                                <p><strong>Phone:</strong> {{ user.profile.phone }}</p>
+                            {% endif %}
+                            {% if user.profile.address %}
+                                <p><strong>Address:</strong> {{ user.profile.address }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Dashboard Actions -->
+                        <div class="row row-cols-1 row-cols-md-3 g-4 mt-4">
+                            {% comment "Action Cards" %}
+                            {% for card in cards %} -- example if looping
+                            {% endcomment %}
+                            <div class="col">
+                                <div class="card glass-card text-center p-4">
+                                    <i class="fas fa-ambulance fa-3x text-danger mb-3"></i>
+                                    <h5>Request Emergency Help</h5>
+                                    <p>Need immediate medical assistance?</p>
+                                    <a href="{% url 'request_help' %}" class="btn btn-danger">Request Help</a>
                                 </div>
                             </div>
-                        {% else %}
-                            <!-- If the user is not authenticated -->
-                            <div class="text-center py-5">
-                                <i class="fas fa-heartbeat fa-5x text-danger mb-4"></i>
-                                <h2 class="mb-4">Welcome to the Medical Emergency System</h2>
-                                <p class="lead mb-4">A comprehensive platform for managing medical emergencies efficiently</p>
-                                <div class="d-flex justify-content-center gap-3">
-                                    <a href="{% url 'register' %}" class="btn btn-success btn-lg">
-                                        <i class="fas fa-user-plus me-2"></i>Register
-                                    </a>
-                                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-sign-in-alt me-2"></i>Login
-                                    </a>
+                            <div class="col">
+                                <div class="card glass-card text-center p-4">
+                                    <i class="fas fa-hospital fa-3x text-info mb-3"></i>
+                                    <h5>View Hospitals</h5>
+                                    <p>Locate nearby hospitals and ambulances.</p>
+                                    <a href="{% url 'hospitals_list' %}" class="btn btn-info">Hospitals</a>
                                 </div>
                             </div>
-                        {% endif %}
-                    </div>
+                            <div class="col">
+                                <div class="card glass-card text-center p-4">
+                                    <i class="fas fa-user-md fa-3x text-success mb-3"></i>
+                                    <h5>Chat with Doctor</h5>
+                                    <p>Speak with a doctor online instantly.</p>
+                                    <a href="{% url 'doctor_chat' %}" class="btn btn-success">Start Chat</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card glass-card text-center p-4">
+                                    <i class="fas fa-file-medical fa-3x text-primary mb-3"></i>
+                                    <h5>Medical Records</h5>
+                                    <p>View or upload your medical records.</p>
+                                    <a href="{% url 'view_records' %}" class="btn btn-primary">View Records</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card glass-card text-center p-4">
+                                    <i class="fas fa-users fa-3x text-warning mb-3"></i>
+                                    <h5>Patient Details</h5>
+                                    <p>Manage patient history and information.</p>
+                                    <a href="{% url 'patients_details' %}" class="btn btn-warning">Patients</a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card glass-card text-center p-4">
+                                    <i class="fas fa-video fa-3x text-light mb-3"></i>
+                                    <h5>Video Consultation</h5>
+                                    <p>Join a live consultation with a specialist.</p>
+                                    <a href="{% url 'video_consultation' %}" class="btn btn-light">Join Call</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Guest View -->
+                        <div class="text-center py-5 text-white">
+                            <i class="fas fa-heartbeat fa-5x text-danger mb-4"></i>
+                            <h2 class="mb-3 text-shadow">Welcome to Medical Emergency System</h2>
+                            <p class="lead mb-4">Your trusted companion in medical emergencies</p>
+                            <div class="d-flex justify-content-center gap-4 auth-buttons">
+                                <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>Register
+                                </a>
+                                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg bg-white text-primary">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
