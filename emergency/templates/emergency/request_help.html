@@ -32,7 +32,7 @@
     {% endif %}
 </div>
 
-<!-- Leaflet.js -->
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -134,11 +134,11 @@
                     trackAmbulance(userLat, userLon);
                 },
                 function () {
-                    document.getElementById("error-message").textContent = "❌ Location access denied. Please enable GPS.";
+                    document.getElementById("error-message").textContent = "Location access denied. Please enable GPS.";
                 }
             );
         } else {
-            document.getElementById("error-message").textContent = "❌ Geolocation not supported by your browser.";
+            document.getElementById("error-message").textContent = "Geolocation not supported by your browser.";
         }
     });
 

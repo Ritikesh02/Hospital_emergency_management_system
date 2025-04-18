@@ -74,7 +74,7 @@
     </div>
 </div>
 
-<!-- View Record Modals -->
+
 {% for record in records %}
 <div class="modal fade" id="viewRecordModal{{ record.id }}" tabindex="-1" aria-labelledby="viewRecordModalLabel{{ record.id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -113,7 +113,7 @@
 {% endfor %}
 
 <script>
-    // Search functionality
+   
     document.getElementById('searchRecord').addEventListener('keyup', function () {
         const searchTerm = this.value.toLowerCase();
         const rows = document.querySelectorAll('table tbody tr');
@@ -130,7 +130,6 @@
         });
     });
 
-    // Prevent modal from auto-closing
     document.addEventListener('DOMContentLoaded', function() {
         const viewRecordModals = document.querySelectorAll('[id^="viewRecordModal"]');
         viewRecordModals.forEach(function(modal) {

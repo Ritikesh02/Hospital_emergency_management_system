@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Emergency System</title>
 
-    <!-- Bootstrap CSS -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Custom Font -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Global Styles */
+        
         body {
             margin: 0;
             padding: 0;
@@ -122,7 +122,7 @@
 </head>
 <body>
 
-    <!-- Navbar -->
+    
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
@@ -159,7 +159,6 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container main-content py-4">
         {% if messages %}
             {% for message in messages %}
@@ -171,14 +170,14 @@
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Footer -->
+   
     <footer class="footer">
         <div class="container">
             <p>© 2025 <strong>Medical Emergency System</strong>. Made with ❤️ for saving lives. | <a href="#">Contact Us</a></p>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
