@@ -7,19 +7,19 @@ class CustomUser(AbstractUser):
 
     groups = models.ManyToManyField(
         Group,
-        related_name="customuser_set",  # Avoid conflict with auth.User.groups
+        related_name="customuser_set",  
         blank=True,
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name="customuser_set",  # Avoid conflict with auth.User.user_permissions
+        related_name="customuser_set",  
         blank=True,
     )
 
 
 
 from django.db import models
-from django.conf import settings  # Import settings to reference AUTH_USER_MODEL
+from django.conf import settings  
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Fix here

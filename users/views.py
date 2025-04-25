@@ -10,9 +10,9 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Profile.objects.get_or_create(user=user)  # Ensure profile exists
-            login(request, user)  # Log the user in automatically
-            return redirect('login')  # Redirect to profile page
+            Profile.objects.get_or_create(user=user)  
+            login(request, user)  
+            return redirect('login')  
     else:
         form = UserRegistrationForm()
 

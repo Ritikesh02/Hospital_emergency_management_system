@@ -8,7 +8,7 @@ from .models import Ambulance, Hospital
 from django.http import JsonResponse
 
 def nearest_ambulance(request):
-    # Example: Return a dummy response for nearest ambulance
+   
     data = {
         "ambulance": {
             "lat": 31.2232, # Dummy latitude (change to real data)
@@ -22,7 +22,7 @@ def nearest_ambulance(request):
 from django.shortcuts import render
 
 def request_help(request):
-    # Automatically show "Call an Ambulance" button when page loads
+   
     return render(request, 'emergency/request_help.html', {'submitted': True})
 
 
@@ -92,7 +92,7 @@ def nearby_hospitals(request):
                 'lon': place_lon
             })
 
-        # Sort by nearest hospitals and return the top 20 closest
+       
         hospitals = sorted(hospitals, key=lambda x: x['distance'])[:20]
 
         return JsonResponse({'hospitals': hospitals})
@@ -107,7 +107,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Patient
 from .forms import PatientForm
 
-# View for listing patients and adding new ones
+
 def patients_details(request):
     patients = Patient.objects.all()
     form = PatientForm()
@@ -120,7 +120,7 @@ def patients_details(request):
 
     return render(request, 'emergency/patients_details.html', {'form': form, 'patients': patients})
 
-# View for editing patient details
+
 def edit_patient(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
@@ -133,7 +133,7 @@ def edit_patient(request, patient_id):
 
     return render(request, 'emergency/edit_patient.html', {'form': form, 'patient': patient})
 
-# View for deleting a patient
+
 def delete_patient(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     if request.method == 'POST':
@@ -146,5 +146,4 @@ def delete_patient(request, patient_id):
 from django.shortcuts import render
 
 def home_view(request):
-    return render(request, "home.html")  # Ensure this matches the correct path
-from django.shortcuts import render
+    return render(request, "home.html") 

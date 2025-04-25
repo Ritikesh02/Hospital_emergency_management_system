@@ -114,3 +114,9 @@ LOGIN_REDIRECT_URL = '/users/profile/'
 
 # Redirect users to the login page if they are not authenticated
 LOGIN_URL = '/login/'
+ALLOWED_HOSTS = [
+    'hospital-emergency-management-system.onrender.com',
+    'localhost',
+    '127.0.0.1'
+]
+ALLOWED_HOSTS = ['*']  

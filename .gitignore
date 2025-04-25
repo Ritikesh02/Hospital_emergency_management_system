@@ -12,9 +12,6 @@ __pycache__/
 *.DS_Store
 
 # Django
-db.sqlite3
-media/
-staticfiles/
 .env
 
 # Virtual environment
