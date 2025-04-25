@@ -120,3 +120,6 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
 ]
 ALLOWED_HOSTS = ['*']  
+CSRF_TRUSTED_ORIGINS = [
+    'https://hospital-emergency-management-system-1.onrender.com'
+]
